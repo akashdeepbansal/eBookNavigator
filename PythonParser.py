@@ -3,7 +3,7 @@ import urllib.request
 
 ###Fetching the response
 url_req='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/90c836a8-52d8-4cd8-8b6d-d7e4060eaeb6?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=false&timezoneOffset=0&q='
-url_req+='Read%20this%20line%again'
+url_req+='Skip%20this%20line'
 response = urllib.request.urlopen(url_req)
 data = json.load(response)   
 print(data)
@@ -150,14 +150,20 @@ def heading(entities):
 	cnt=0
 	prev_or_next=0 		##0 for next ,1 for prev
 	no_of_jumps=1
+	ordinal_flag=0
 	for x in entities:
-		if(x["type"]=="builtin.number" or x["type"]=="builtin.ordinal"):
+		if(x["type"]=="builtin.number" ):
 				no_of_jumps=int(x["resolution"]["value"])
+		elif(x["type"]=="builtin.ordinal"):
+			ordinal_flag=1
+			no_of_jumps=int(x["resolution"]["value"])
 		else:
 			if(x["type"]=="previous"):
 				prev_or_next=1
 			elif(x["type"] not in basic_comm):
 				cnt+=1
+	if(ordinal_flag==1):
+		print("Pressing Ctrl+Home")		##To go to the start of the document
 	if(prev_or_next==1):			##for previous heading	
 		while(no_of_jumps>0):
 			print("Pressing shift+h")
@@ -165,6 +171,34 @@ def heading(entities):
 	else:
 		while(no_of_jumps>0):
 			print("Pressing h")
+			no_of_jumps-=1
+			
+def graphic(entities):	
+	basic_comm={"last":1,"previous":1,"next":1,"graphic":1}
+	cnt=0
+	prev_or_next=0 		##0 for next ,1 for prev
+	no_of_jumps=1
+	ordinal_flag=0
+	for x in entities:
+		if(x["type"]=="builtin.number" ):
+				no_of_jumps=int(x["resolution"]["value"])
+		elif(x["type"]=="builtin.ordinal"):
+			ordinal_flag=1
+			no_of_jumps=int(x["resolution"]["value"])
+		else:
+			if(x["type"]=="previous"):
+				prev_or_next=1
+			elif(x["type"] not in basic_comm):
+				cnt+=1
+	if(ordinal_flag==1):
+		print("Pressing Ctrl+Home")		##To go to the start of the document
+	if(prev_or_next==1):			##for previous heading	
+		while(no_of_jumps>0):
+			print("Pressing shift+g")
+			no_of_jumps-=1
+	else:
+		while(no_of_jumps>0):
+			print("Pressing g")
 			no_of_jumps-=1
 		
 def column(entities):	
@@ -216,6 +250,62 @@ def table(entities):
 	cnt=0
 	prev_or_next=0 		##0 for next ,1 for prev
 	no_of_jumps=1
+	ordinal_flag=0
+	for x in entities:
+		if(x["type"]=="builtin.number" ):
+				no_of_jumps=int(x["resolution"]["value"])
+		elif(x["type"]=="builtin.ordinal"):
+			ordinal_flag=1
+			no_of_jumps=int(x["resolution"]["value"])
+		else:
+			if(x["type"]=="previous"):
+				prev_or_next=1
+			elif(x["type"] not in basic_comm):
+				cnt+=1
+	if(ordinal_flag==1):
+		print("Pressing Ctrl+Home")		##To go to the start of the document
+	if(prev_or_next==1):			##for previous heading	
+		while(no_of_jumps>0):
+			print("Pressing shift+t")
+			no_of_jumps-=1
+	else:
+		while(no_of_jumps>0):
+			print("Pressing t")
+			no_of_jumps-=1
+
+def list(entities):
+	basic_comm={"last":1,"previous":1,"next":1,"list":1}
+	cnt=0
+	prev_or_next=0 		##0 for next ,1 for prev
+	no_of_jumps=1
+	ordinal_flag=0
+	for x in entities:
+		if(x["type"]=="builtin.number" ):
+				no_of_jumps=int(x["resolution"]["value"])
+		elif(x["type"]=="builtin.ordinal"):
+			ordinal_flag=1
+			no_of_jumps=int(x["resolution"]["value"])
+		else:
+			if(x["type"]=="previous"):
+				prev_or_next=1
+			elif(x["type"] not in basic_comm):
+				cnt+=1
+	if(ordinal_flag==1):
+		print("Pressing Ctrl+Home")		##To go to the start of the document
+	if(prev_or_next==1):			##for previous heading	
+		while(no_of_jumps>0):
+			print("Pressing shift+l")
+			no_of_jumps-=1
+	else:
+		while(no_of_jumps>0):
+			print("Pressing l")
+			no_of_jumps-=1
+			
+def listitem(entities):
+	basic_comm={"last":1,"previous":1,"next":1,"item":1}
+	cnt=0
+	prev_or_next=0 		##0 for next ,1 for prev
+	no_of_jumps=1
 	for x in entities:
 		if(x["type"]=="builtin.number" or x["type"]=="builtin.ordinal"):
 				no_of_jumps=int(x["resolution"]["value"])
@@ -226,14 +316,13 @@ def table(entities):
 				cnt+=1
 	if(prev_or_next==1):			##for previous heading	
 		while(no_of_jumps>0):
-			print("Pressing shift+t")
+			print("Pressing shift+i")
 			no_of_jumps-=1
 	else:
 		while(no_of_jumps>0):
-			print("Pressing t")
+			print("Pressing i")
 			no_of_jumps-=1
-
-			
+				
 		
 key_commands=	{
 "Previous Paragraph":previous_paragraph,
@@ -249,7 +338,10 @@ key_commands=	{
 "Heading":heading,
 "Column":column,
 "Row":row,
-"Table":table
+"Table":table,
+"Graphics":graphic,
+"List":list,
+"ListItem":listitem
 
 }
 with open('JSONResponse.txt') as f:
