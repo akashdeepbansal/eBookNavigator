@@ -1,0 +1,138 @@
+https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/b8aef0c4-9f54-4baa-b52b-bb11a1a32e44?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=true&timezoneOffset=0&q=
+
+
+TestBook endpoint-  https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/90c836a8-52d8-4cd8-8b6d-d7e4060eaeb6?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=false&timezoneOffset=0&q=
+
+
+Example Responses
+{
+  "query": "Go back six words",
+  "topScoringIntent": {
+    "intent": "PreviousWord",
+    "score": 0.4418301
+  },
+  "entities": [
+    {
+      "entity": "six",
+      "type": "builtin.number",
+      "startIndex": 8,
+      "endIndex": 10,
+      "resolution": {
+        "subtype": "integer",
+        "value": "6"
+      }
+    },
+    {
+      "entity": "words",
+      "type": "word",
+      "startIndex": 12,
+      "endIndex": 16,
+      "score": 0.7216497
+    }
+  ]
+}
+
+
+{
+  "query": "Go to the next paragraph",
+  "topScoringIntent": {
+    "intent": "Next paragraph",
+    "score": 0.895175338
+  },
+  "entities": [
+    {
+      "entity": "next",
+      "type": "Next",
+      "startIndex": 10,
+      "endIndex": 13,
+      "score": 0.9899025
+    },
+    {
+      "entity": "paragraph",
+      "type": "paragraph",
+      "startIndex": 15,
+      "endIndex": 23,
+      "score": 0.91083914
+    }
+  ]
+}
+
+
+{
+  "query": "Jump 4 paragraphs",
+  "topScoringIntent": {
+    "intent": "Next paragraph",
+    "score": 0.8606331
+  },
+  "entities": [
+    {
+      "entity": "4",
+      "type": "builtin.number",
+      "startIndex": 5,
+      "endIndex": 5,
+      "resolution": {
+        "subtype": "integer",
+        "value": "4"
+      }
+    },
+    {
+      "entity": "paragraphs",
+      "type": "paragraph",
+      "startIndex": 7,
+      "endIndex": 16,
+      "score": 0.8272707
+    }
+  ]
+}
+
+
+{
+  "query": "Jump to the previous paragraph",
+  "topScoringIntent": {
+    "intent": "Previous Paragraph",
+    "score": 0.76708287
+  },
+  "entities": [
+    {
+      "entity": "paragraph",
+      "type": "paragraph",
+      "startIndex": 21,
+      "endIndex": 29,
+      "score": 0.937542856
+    },
+    {
+      "entity": "previous",
+      "type": "previous",
+      "startIndex": 12,
+      "endIndex": 19,
+      "score": 0.986440063
+    }
+  ]
+}
+
+
+{
+  "query": "Go to the first heading",
+  "topScoringIntent": {
+    "intent": "Heading",
+    "score": 0.985079169
+  },
+  "entities": [
+    {
+      "entity": "heading",
+      "type": "heading",
+      "startIndex": 16,
+      "endIndex": 22,
+      "score": 0.975836039
+    },
+    {
+      "entity": "first",
+      "type": "builtin.ordinal",
+      "startIndex": 10,
+      "endIndex": 14,
+      "resolution": {
+        "value": "1"
+      }
+    }
+  ]
+}
