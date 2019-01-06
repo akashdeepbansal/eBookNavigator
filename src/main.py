@@ -16,7 +16,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	#The function associated with the key "W"
 	def script_doBeep(self, gesture):
-		tones.beep(440, 1000) # Beep a tone for 1 second. ? What are the input parameters of the function: 440, 1000?		start()					#defined in PythonParser.py file
+		tones.beep(440, 1000) # Beep a tone for 1 second. 		
+		start()			#defined in PythonParser.py file
 		
 		
 
