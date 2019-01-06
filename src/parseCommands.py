@@ -3,13 +3,13 @@ import urllib	#to work with URL's to connect to LUIS
 from globalCommands import commands	#All the NVDA functions are defined in this file
 from speech import *	#python speech modules
 from browseMode import BrowseModeTreeInterceptor	#to be able to use some functions defined in browseMode file in NVDA code
-import os.path	#??
-import sys	#??
-sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'modules'))	#??
+import os.path	#to call os related functions like file path here
+import sys	#to call system specific functions and parameters
+sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'modules'))	# adding path to the external dependencies conatined in modules directory to be able to use them in this file
 import keyboard	#to be able to use python keyboard module to send keyboard events
 import speech_recognition as sr	#for speech recognition
 
-del sys.path[0] #??
+del sys.path[0] # changes the path to access dependencies inside the modules directory
 import time #to calculate the time taken 
 
 startTime = time.time()
