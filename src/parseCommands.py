@@ -1,27 +1,27 @@
-import json	#??
-import urllib	#??
-from globalCommands import commands	#??
-from speech import *	#??
-from browseMode import BrowseModeTreeInterceptor	#??
+import json	#LUIS returns json encoded data,so this module is required to read the response sent through urllib
+import urllib	#to work with URL's to connect to LUIS
+from globalCommands import commands	#All the NVDA functions are defined in this file
+from speech import *	#python speech modules
+from browseMode import BrowseModeTreeInterceptor	#to be able to use some functions defined in browseMode file in NVDA code
 import os.path	#??
 import sys	#??
 sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'modules'))	#??
-import keyboard	#??
-import speech_recognition as sr	#??
+import keyboard	#to be able to use python keyboard module to send keyboard events
+import speech_recognition as sr	#for speech recognition
 
 del sys.path[0] #??
-import time #??
+import time #to calculate the time taken 
 
 startTime = time.time()
-#Objective? Inputs and Outputs?
+#Speech Recognition module, which listens to user speech input and returns it's corresponding text form
 def speech_rec():
 	r = sr.Recognizer()
 
 	print("Speak Now!")
 	with sr.Microphone() as source:                # use the default microphone as the audio source
-		r.adjust_for_ambient_noise(source, duration = 1)	#What is the importance of duration=1
+		r.adjust_for_ambient_noise(source, duration = 1)	# listen for 1 second to calibrate the energy threshold for ambient noise levels
 		print "Time when you spoke:",time.time()-startTime
-		audio = r.listen(source)                   # listen for the first phrase and extract it into audio data ??Didn't get what exactly is happening in this step.
+		audio = r.listen(source)                   # listen for the audio
 
 	try:
 		s=r.recognize_google(audio)					# recognize speech using Google Speech Recognition
@@ -32,7 +32,7 @@ def speech_rec():
 	except LookupError:                           # speech is unintelligible
 		print("Could not understand audio")
 
-#?? Objective? Inputs and Outputs?
+#The function which is called once the user presses key "w", calls the speech recognition function and then sends it to LUIS,based on whose response corresponding function is called
 def start():
 	#speech_output_filename="C:\\Users\\hp\\source\\repos\\CPPHelloSpeech\\CPPHelloSpeech\\speech_to_text_out.txt"
 
@@ -47,7 +47,7 @@ def start():
 	###Fetching the response
 	#url_req='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/90c836a8-52d8-4cd8-8b6d-d7e4060eaeb6?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=false&timezoneOffset=0&q='
 	#url_req+='Go%20to%20the%20fourth%20last%20heading'
-	args={"q":s}	#??
+	args={"q":s}	#pass the command text as an argument to luis
 	'''
 	url_req='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/90c836a8-52d8-4cd8-8b6d-d7e4060eaeb6?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=false&timezoneOffset=0&{}'.format(urllib.parse.urlencode(args))
 	'''
@@ -62,7 +62,32 @@ def start():
 
 	data = json.load(response)   
 	print("data=",data)
-	
+	#LUIS output i.e data is of the form
+	'''
+	{
+	  "query": "go to the next  line",
+	  "topScoringIntent": {
+	    "intent": "NextLine",
+	    "score": 0.8478889
+	  },
+	  "entities": [
+	    {
+	      "entity": "line",
+	      "type": "line",
+	      "startIndex": 16,
+	      "endIndex": 19,
+	      "score": 0.9715121
+	    },
+	    {
+	      "entity": "next",
+	      "type": "Next",
+	      "startIndex": 10,
+	      "endIndex": 13,
+	      "score": 0.993965149
+	    }
+	  ]
+	}
+	'''
 	##Dictionary with key as Intents defined in LUIS, and values as the corresponding function calls
 	key_commands=	{
 	
@@ -95,10 +120,10 @@ def start():
 	"StartWord":start_word
 	}
 	
-	intent=data["topScoringIntent"]["intent"]
+	intent=data["topScoringIntent"]["intent"]		#extracts intent from data
 	print("intent=",intent)
 	x=data["entities"]
-	key_commands[intent](x)
+	key_commands[intent](x)					##extracts the entities from data and sends it to the corresponding function
 
 
 
@@ -108,11 +133,31 @@ def next_line(entities):
 	cnt=0
 	basic_comm={"next":1,"line":1}
 	#?? Purpose of this for loop, may be explain with an example showing what output you get from LUIS
+	#The various entities it receivesin the form of dictionary  are:
+	'''
+	  "entities": [
+	    {
+	      "entity": "line",
+	      "type": "line",
+	      "startIndex": 16,
+	      "endIndex": 19,
+	      "score": 0.9715121
+	    },
+	    {
+	      "entity": "next",
+	      "type": "Next",
+	      "startIndex": 10,
+	      "endIndex": 13,
+	      "score": 0.993965149
+	    }
+	  ]
+	'''
+	#This loop runs over all entities like "line" and "next" in this case
 	for x in entities:
 		if(x["type"]=="builtin.number" or x["type"]=="builtin.ordinal"):
 			no_of_jumps=int(x["resolution"]["value"])		##extracts the number of jumps required
 		else:
-			if(x["type"] not in basic_comm):	#?? Not clear, please elaborate
+			if(x["type"] not in basic_comm):	#Not of any use as of now
 				cnt+=1
 	
 	#Calls the nextLine function no_of_jumps times
