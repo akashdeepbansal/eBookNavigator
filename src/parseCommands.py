@@ -132,8 +132,7 @@ def next_line(entities):
 	no_of_jumps=0
 	cnt=0
 	basic_comm={"next":1,"line":1}
-	#?? Purpose of this for loop, may be explain with an example showing what output you get from LUIS
-	#The various entities it receivesin the form of dictionary  are:
+	#The various entities it receives as a parameter in the form of dictionary  are:
 	'''
 	  "entities": [
 	    {
