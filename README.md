@@ -14,6 +14,9 @@ pip install keyboard
 pip install SpeechRecognition
   - Python PyAudio module- This can be installed using the command pip install pyaudio
 
+  - Clone the github repository
+  - Since this module is planned to work as an add-on, the files inside src folder need to be copied inside the globalPlugins folder (C:\Users\\[Your System Name]\AppData\Roaming\nvda\globalPlugins) of the NVDA directory.
+
 # Design
 
 The project has three main steps:

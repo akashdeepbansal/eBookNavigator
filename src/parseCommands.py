@@ -1,27 +1,26 @@
-import json	#LUIS returns json encoded data,so this module is required to read the response sent through urllib
-import urllib	#to work with URL's to connect to LUIS
-from globalCommands import commands	#All the NVDA functions are defined in this file
-from speech import *	#python speech modules
-from browseMode import BrowseModeTreeInterceptor	#to be able to use some functions defined in browseMode file in NVDA code
-import os.path	#to call os related functions like file path here
-import sys	#to call system specific functions and parameters
-sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'modules'))	# adding path to the external dependencies conatined in modules directory to be able to use them in this file
-import keyboard	#to be able to use python keyboard module to send keyboard events
-import speech_recognition as sr	#for speech recognition
+import json
+import urllib
+from globalCommands import commands
+from speech import *
+from browseMode import BrowseModeTreeInterceptor
+import os.path
+import sys
+sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'modules'))
+import keyboard
+import speech_recognition as sr
 
-del sys.path[0] # changes the path to access dependencies inside the modules directory
-import time #to calculate the time taken 
+del sys.path[0]
+import time
 
 startTime = time.time()
-#Speech Recognition module, which listens to user speech input and returns it's corresponding text form
 def speech_rec():
 	r = sr.Recognizer()
 
 	print("Speak Now!")
 	with sr.Microphone() as source:                # use the default microphone as the audio source
-		r.adjust_for_ambient_noise(source, duration = 1)	# listen for 1 second to calibrate the energy threshold for ambient noise levels
+		r.adjust_for_ambient_noise(source, duration = 1)
 		print "Time when you spoke:",time.time()-startTime
-		audio = r.listen(source)                   # listen for the audio
+		audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
 
 	try:
 		s=r.recognize_google(audio)					# recognize speech using Google Speech Recognition
@@ -32,9 +31,9 @@ def speech_rec():
 	except LookupError:                           # speech is unintelligible
 		print("Could not understand audio")
 
-#The function which is called once the user presses key "w", calls the speech recognition function and then sends it to LUIS,based on whose response corresponding function is called
 def start():
 	#speech_output_filename="C:\\Users\\hp\\source\\repos\\CPPHelloSpeech\\CPPHelloSpeech\\speech_to_text_out.txt"
+
 
 	s=speech_rec()		#returns the recognized speech
 	'''
@@ -47,10 +46,9 @@ def start():
 	###Fetching the response
 	#url_req='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/90c836a8-52d8-4cd8-8b6d-d7e4060eaeb6?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=false&timezoneOffset=0&q='
 	#url_req+='Go%20to%20the%20fourth%20last%20heading'
-	args={"q":s}	#pass the command text as an argument to luis
+	args={"q":s}
 	'''
-	url_req='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/90c836a8-52d8-4cd8-8b6d-d7e4060eaeb6?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=false&timezoneOffset=0&{}'.format(urllib.parse.urlencode(args))
-	'''
+	url_req='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/90c836a8-52d8-4cd8-8b6d-d7e4060eaeb6?subscription-key=662e5a4e75654f6cadbf143294a5e0a8&verbose=false&timezoneOffset=0&{}'.format(urllib.parse.urlencode(args))'''
 	#url_req+='Move to the next line'
 	#response = urllib.request.urlopen(url_req)
 
@@ -62,32 +60,7 @@ def start():
 
 	data = json.load(response)   
 	print("data=",data)
-	#LUIS output i.e data is of the form
-	'''
-	{
-	  "query": "go to the next  line",
-	  "topScoringIntent": {
-	    "intent": "NextLine",
-	    "score": 0.8478889
-	  },
-	  "entities": [
-	    {
-	      "entity": "line",
-	      "type": "line",
-	      "startIndex": 16,
-	      "endIndex": 19,
-	      "score": 0.9715121
-	    },
-	    {
-	      "entity": "next",
-	      "type": "Next",
-	      "startIndex": 10,
-	      "endIndex": 13,
-	      "score": 0.993965149
-	    }
-	  ]
-	}
-	'''
+	
 	##Dictionary with key as Intents defined in LUIS, and values as the corresponding function calls
 	key_commands=	{
 	
@@ -120,10 +93,10 @@ def start():
 	"StartWord":start_word
 	}
 	
-	intent=data["topScoringIntent"]["intent"]		#extracts intent from data
+	intent=data["topScoringIntent"]["intent"]
 	print("intent=",intent)
 	x=data["entities"]
-	key_commands[intent](x)					##extracts the entities from data and sends it to the corresponding function
+	key_commands[intent](x)
 
 
 
@@ -132,31 +105,11 @@ def next_line(entities):
 	no_of_jumps=0
 	cnt=0
 	basic_comm={"next":1,"line":1}
-	#The various entities it receives as a parameter in the form of dictionary  are:
-	'''
-	  "entities": [
-	    {
-	      "entity": "line",
-	      "type": "line",
-	      "startIndex": 16,
-	      "endIndex": 19,
-	      "score": 0.9715121
-	    },
-	    {
-	      "entity": "next",
-	      "type": "Next",
-	      "startIndex": 10,
-	      "endIndex": 13,
-	      "score": 0.993965149
-	    }
-	  ]
-	'''
-	#This loop runs over all entities like "line" and "next" in this case
 	for x in entities:
 		if(x["type"]=="builtin.number" or x["type"]=="builtin.ordinal"):
 			no_of_jumps=int(x["resolution"]["value"])		##extracts the number of jumps required
 		else:
-			if(x["type"] not in basic_comm):	#Not of any use as of now
+			if(x["type"] not in basic_comm):
 				cnt+=1
 	
 	#Calls the nextLine function no_of_jumps times

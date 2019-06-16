@@ -1,8 +1,4 @@
 # Directory Structure:
-Since this module is planned to work as an add-on, the main folder of the project should be inside the globalPlugins folder of the NVDA directory.
-Clone the github repository and copy all the files from E-Book-Navigation-master folder to the C:\Users\\[Your System Name]\AppData\Roaming\nvda\globalPlugins folder.
-
-# System Behavior 
 
 1. main.py- The main file where GlobalPlugin class is defined. It associates the “w” key, to start listening to user’s command.
 parseCommands.py- The main.py calls this file, which is responsible for the overall understanding and execution of  user’s command.
